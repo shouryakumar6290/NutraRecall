@@ -1,0 +1,415 @@
+/* Recall Wizard Layout */
+.recall-container {
+  max-width: 850px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Stepper progress headers */
+.stepper-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+  position: relative;
+  padding: 0 10px;
+}
+
+.stepper-line {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  right: 30px;
+  height: 2px;
+  background: var(--bg-tertiary);
+  z-index: 1;
+}
+
+.stepper-progress-fill {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  width: 0%; /* Dynamic */
+  height: 2px;
+  background: var(--primary-gradient);
+  z-index: 2;
+  transition: width var(--transition-normal) ease;
+}
+
+.step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 3;
+  cursor: pointer;
+}
+
+.step-number {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 2px solid var(--glass-border);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all var(--transition-normal);
+}
+
+.step-indicator.active .step-number {
+  background: var(--bg-primary);
+  border-color: var(--primary);
+  color: white;
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.step-indicator.completed .step-number {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+
+.step-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color var(--transition-normal);
+}
+
+.step-indicator.active .step-label {
+  color: white;
+}
+
+/* Wizard Steps wrapper */
+.wizard-step {
+  display: none;
+  animation: stepFade var(--transition-normal);
+  flex-direction: column;
+  gap: 24px;
+}
+
+.wizard-step.active {
+  display: flex;
+}
+
+@keyframes stepFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Step 1: Quick List */
+.quick-list-box {
+  padding: 30px;
+}
+
+.quick-list-textarea {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.suggestions-group {
+  margin-top: 15px;
+}
+
+.suggestion-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.suggestion-chip {
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.suggestion-chip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  border-color: var(--glass-border-hover);
+}
+
+/* Step 2: Food Detail Editor */
+.detail-editor-box {
+  padding: 24px;
+}
+
+.food-row-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.food-row-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  animation: slideIn var(--transition-fast);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.food-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.food-row-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+}
+
+.remove-food-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+}
+
+.remove-food-btn:hover {
+  color: var(--danger);
+  background: var(--danger-glow);
+}
+
+.food-fields-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .food-fields-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .food-fields-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Search Dropdown / Autocomplete Wrapper */
+.search-wrapper {
+  position: relative;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--glass-border-hover);
+  border-radius: var(--radius-md);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 20;
+  box-shadow: var(--shadow-lg);
+  display: none;
+}
+
+.autocomplete-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background var(--transition-fast);
+}
+
+.autocomplete-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.autocomplete-header {
+  padding: 8px 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--glass-border);
+  font-weight: bold;
+}
+
+/* Step 3: Forgotten Foods Checklist */
+.forgotten-prompt {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.forgotten-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.forgotten-card {
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  user-select: none;
+}
+
+.forgotten-icon {
+  font-size: 28px;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.forgotten-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.forgotten-checkbox {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.forgotten-checkbox::after {
+  content: '✓';
+  color: white;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.forgotten-card:hover {
+  border-color: var(--glass-border-hover);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.forgotten-card.checked {
+  border-color: var(--primary);
+  background: var(--primary-glow);
+}
+
+.forgotten-card.checked .forgotten-icon {
+  color: #a5b4fc;
+  transform: scale(1.1);
+}
+
+.forgotten-card.checked .forgotten-title {
+  color: white;
+}
+
+.forgotten-card.checked .forgotten-checkbox {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.forgotten-card.checked .forgotten-checkbox::after {
+  opacity: 1;
+}
+
+/* Wizard Footer Navigation */
+.wizard-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+/* Step 4: Submission screen */
+.summary-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.summary-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.summary-stat-box {
+  padding: 16px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+}
+
+.summary-stat-val {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: var(--font-title);
+  margin-bottom: 4px;
+}
+
+.summary-stat-lbl {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.summary-food-list {
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+}
+
+.summary-food-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+
+.summary-food-details {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 600px) {
+  .summary-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

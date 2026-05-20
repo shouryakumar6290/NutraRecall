@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutraRecall - 24-Hour Diet Recall Dashboard</title>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/recall.css">
+</head>
+<body>
+
+  <div id="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar-nav">
+      <div>
+        <div class="logo-container">
+          <div class="logo-icon">N</div>
+          <span class="logo-text">NutraRecall</span>
+        </div>
+        
+        <nav class="nav-menu">
+          <a href="#" class="nav-item active" data-view="dashboard" id="nav-dashboard">
+            <i class="fas fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="#" class="nav-item" data-view="recall" id="nav-recall">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Diet Recall</span>
+          </a>
+          <a href="#" class="nav-item" data-view="history" id="nav-history">
+            <i class="fas fa-history"></i>
+            <span>History Logs</span>
+          </a>
+          <a href="#" class="nav-item" data-view="library" id="nav-library">
+            <i class="fas fa-book-open"></i>
+            <span>Food Library</span>
+          </a>
+          <a href="#" class="nav-item" data-view="profile" id="nav-profile">
+            <i class="fas fa-sliders-h"></i>
+            <span>Settings</span>
+          </a>
+        </nav>
+      </div>
+      
+      <div class="sidebar-footer">
+        <!-- Backend Connection Indicator -->
+        <div class="connection-badge local" id="connection-status-badge">
+          <div class="connection-dot"></div>
+          <span id="connection-status-text">Checking...</span>
+        </div>
+        <div style="font-size: 10px; color: var(--text-muted); text-align: center;">
+          NutraRecall v1.0.0
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main View Content Area -->
+    <main class="main-content">
+      
+      <!-- 1. DASHBOARD VIEW -->
+      <section class="app-view active" id="view-dashboard">
+        <header class="content-header">
+          <div class="header-title-area">
+            <h1>Nutrition Dashboard</h1>
+            <p>Track your dietary recovery and goals for today</p>
+          </div>
+        </header>
+
+        <div class="dashboard-grid">
+          
+          <!-- Calorie Ring Tracker -->
+          <div class="col-4">
+            <div class="glass-panel widget-card">
+              <h3 class="widget-title">Daily Calories <i class="fas fa-fire" style="color: var(--primary);"></i></h3>
+              <div class="calorie-progress-container">
+                <div class="circle-progress-wrapper">
+                  <svg>
+                    <circle class="circle-bg" cx="80" cy="80" r="70"></circle>
+                    <circle class="circle-bar" id="calorie-circle-bar" cx="80" cy="80" r="70"></circle>
+                  </svg>
+                  <div class="circle-text-center">
+                    <div class="circle-number" id="cal-percent">0%</div>
+                    <div class="circle-label">of target</div>
+                  </div>
+                </div>
+                <div class="calorie-stats">
+                  <div class="stat-item">
+                    <span class="stat-val" id="cal-consumed">0</span>
+                    <span class="stat-label">Consumed</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-val" id="cal-goal" style="color: var(--text-muted);">2000</span>
+                    <span class="stat-label">Daily Goal</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Macros Progress List -->
+          <div class="col-4">
+            <div class="glass-panel widget-card">
+              <h3 class="widget-title">Macronutrients <i class="fas fa-seedling" style="color: var(--success);"></i></h3>
+              <div class="macro-list">
+                
+                <div class="macro-bar-item">
+                  <div class="macro-bar-header">
+                    <span class="macro-name">Carbohydrates</span>
+                    <span class="macro-values"><span id="carbs-consumed">0g</span> / <span id="carbs-goal">220g</span></span>
+                  </div>
+                  <div class="macro-progress-track">
+                    <div class="macro-progress-fill fill-carbs" id="carbs-progress-fill"></div>
+                  </div>
+                </div>
+
+                <div class="macro-bar-item">
+                  <div class="macro-bar-header">
+                    <span class="macro-name">Protein</span>
+                    <span class="macro-values"><span id="protein-consumed">0g</span> / <span id="protein-goal">120g</span></span>
+                  </div>
+                  <div class="macro-progress-track">
+                    <div class="macro-progress-fill fill-protein" id="protein-progress-fill"></div>
+                  </div>
+                </div>
+
+                <div class="macro-bar-item">
+                  <div class="macro-bar-header">
+                    <span class="macro-name">Fat</span>
+                    <span class="macro-values"><span id="fat-consumed">0g</span> / <span id="fat-goal">65g</span></span>
+                  </div>
+                  <div class="macro-progress-track">
+                    <div class="macro-progress-fill fill-fat" id="fat-progress-fill"></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Water Tracker -->
+          <div class="col-4">
+            <div class="glass-panel widget-card">
+              <h3 class="widget-title">
+                Hydration Tracker 
+                <a href="#" id="reset-water-btn" style="font-size: 11px; text-decoration: none; color: var(--text-muted); cursor: pointer;"><i class="fas fa-sync-alt"></i> Reset</a>
+              </h3>
+              <div class="water-tracker-container">
+                <div class="water-visualizer">
+                  <div class="water-fluid" id="water-fluid-element"></div>
+                </div>
+                <div style="text-align: center;">
+                  <h4 style="font-size: 20px; font-weight:700;" id="water-consumed">0 ml</h4>
+                  <p style="font-size: 11px; color: var(--text-muted);">Goal: <span id="water-goal">2500 ml</span></p>
+                </div>
+                <div class="water-buttons">
+                  <button class="water-btn" data-amount="250" id="btn-water-250">+250</button>
+                  <button class="water-btn" data-amount="500" id="btn-water-500">+500</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Nutrition Analysis Feedback -->
+          <div class="col-6">
+            <div class="glass-panel widget-card insights-card">
+              <h3 class="widget-title" style="color: white;">Smart Dietary Insights <i class="fas fa-brain" style="color: var(--accent-purple);"></i></h3>
+              <div class="insights-list" id="insights-list-container">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Log List Table -->
+          <div class="col-6">
+            <div class="glass-panel widget-card">
+              <h3 class="widget-title">Today's Meal Entries <i class="fas fa-list-ul" style="color: var(--accent-cyan);"></i></h3>
+              <div class="recent-logs-table-container">
+                <table class="recent-logs-table">
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Food Item</th>
+                      <th>Meal</th>
+                      <th>Portion</th>
+                      <th>Calories</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-logs-table-body">
+                    <!-- Injected via JavaScript -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 2. DIET RECALL VIEW (WIZARD STEPPER) -->
+      <section class="app-view" id="view-recall">
+        <header class="content-header">
+          <div class="header-title-area">
+            <h1>24-Hour Diet Recall</h1>
+            <p>Log all foods, beverages, and portion details consumed in the previous 24 hours</p>
+          </div>
+        </header>
+
+        <div class="recall-container">
+          <div class="glass-panel" style="padding: 30px;">
+            
+            <!-- Progress Stepper Header -->
+            <div class="stepper-header">
+              <div class="stepper-line"></div>
+              <div class="stepper-progress-fill"></div>
+              
+              <div class="step-indicator active" data-step="1" id="step-ind-1">
+                <div class="step-number">1</div>
+                <div class="step-label">Quick List</div>
+              </div>
+              <div class="step-indicator" data-step="2" id="step-ind-2">
+                <div class="step-number">2</div>
+                <div class="step-label">Verify Details</div>
+              </div>
+              <div class="step-indicator" data-step="3" id="step-ind-3">
+                <div class="step-number">3</div>
+                <div class="step-label">Probe Forgotten</div>
+              </div>
+              <div class="step-indicator" data-step="4" id="step-ind-4">
+                <div class="step-number">4</div>
+                <div class="step-label">Review & Submit</div>
+              </div>
+            </div>
+
+            <!-- STEP 1: QUICK LIST -->
+            <div class="wizard-step active" id="wizard-step-1">
+              <div class="form-group">
+                <h3 style="font-family: var(--font-title); font-size:18px; margin-bottom:10px; color:white;">Step 1: Rapid Recall Quick List</h3>
+                <p style="color: var(--text-secondary); font-size: 13px; margin-bottom:15px; line-height: 1.4;">
+                  Enter a general list of all foods, meals, and snacks you had yesterday. Don't worry about portions yet — just separate each food item with a line break or comma.
+                </p>
+                <textarea class="form-input quick-list-textarea" id="quick-list-input" placeholder="e.g.&#10;2 eggs and oatmeal for breakfast&#10;Medium apple for morning snack&#10;Grilled chicken breast and brown rice for lunch&#10;Banana&#10;Grilled salmon salad for dinner"></textarea>
+              </div>
+              <div class="suggestions-group">
+                <label>Common items (Click to add):</label>
+                <div class="suggestion-tags">
+                  <span class="suggestion-chip">Eggs</span>
+                  <span class="suggestion-chip">Oats</span>
+                  <span class="suggestion-chip">Chicken Breast</span>
+                  <span class="suggestion-chip">Brown Rice</span>
+                  <span class="suggestion-chip">Apple</span>
+                  <span class="suggestion-chip">Banana</span>
+                  <span class="suggestion-chip">Salmon</span>
+                  <span class="suggestion-chip">Whole Milk</span>
+                  <span class="suggestion-chip">Greek Yogurt</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2: VERIFY DETAILS -->
+            <div class="wizard-step" id="wizard-step-2">
+              <h3 style="font-family: var(--font-title); font-size:18px; color:white;">Step 2: Adjust Time & Portion Portions</h3>
+              <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.4;">
+                Select matching foods from our database to calculate nutrient scores, and specify meal type and portion size multiplier.
+              </p>
+              
+              <div class="food-row-list" id="food-row-list">
+                <!-- Dynamically generated rows loaded here -->
+              </div>
+              
+              <button type="button" class="btn btn-secondary" id="add-empty-row-btn" style="align-self: flex-start;">
+                <i class="fas fa-plus"></i> Add Another Food Item
+              </button>
+            </div>
+
+            <!-- STEP 3: PROBE FORGOTTEN FOODS -->
+            <div class="wizard-step" id="wizard-step-3">
+              <h3 style="font-family: var(--font-title); font-size:18px; color:white; text-align:center;">Step 3: Forgotten Foods Checklist</h3>
+              <p class="forgotten-prompt" style="color: var(--text-secondary); font-size: 13px; line-height: 1.4;">
+                Studies show people frequently omit small items. Check any boxes below if you consumed these foods yesterday, and we will help you add them:
+              </p>
+              
+              <div class="forgotten-grid">
+                <div class="glass-panel forgotten-card" data-id="water" id="forget-water">
+                  <div class="forgotten-checkbox"></div>
+                  <div class="forgotten-icon"><i class="fas fa-tint"></i></div>
+                  <div class="forgotten-title">Water</div>
+                </div>
+                <div class="glass-panel forgotten-card" data-id="coffee" id="forget-coffee">
+                  <div class="forgotten-checkbox"></div>
+                  <div class="forgotten-icon"><i class="fas fa-mug-hot"></i></div>
+                  <div class="forgotten-title">Coffee / Tea</div>
+                </div>
+                <div class="glass-panel forgotten-card" data-id="sauce" id="forget-sauce">
+                  <div class="forgotten-checkbox"></div>
+                  <div class="forgotten-icon"><i class="fas fa-mortar-pestle"></i></div>
+                  <div class="forgotten-title">Sauces / Condiments</div>
+                </div>
+                <div class="glass-panel forgotten-card" data-id="alcohol" id="forget-alcohol">
+                  <div class="forgotten-checkbox"></div>
+                  <div class="forgotten-icon"><i class="fas fa-glass-martini-alt"></i></div>
+                  <div class="forgotten-title">Alcoholic Drinks</div>
+                </div>
+                <div class="glass-panel forgotten-card" data-id="dressing" id="forget-dressing">
+                  <div class="forgotten-checkbox"></div>
+                  <div class="forgotten-icon"><i class="fas fa-seedling"></i></div>
+                  <div class="forgotten-title">Salad Dressings</div>
+                </div>
+                <div class="glass-panel forgotten-card" data-id="snack" id="forget-snack">
+                  <div class="forgotten-checkbox"></div>
+                  <div class="forgotten-icon"><i class="fas fa-cookie"></i></div>
+                  <div class="forgotten-title">Late-night Snacks</div>
+                </div>
+                <div class="glass-panel forgotten-card" data-id="sweets" id="forget-sweets">
+                  <div class="forgotten-checkbox"></div>
+                  <div class="forgotten-icon"><i class="fas fa-ice-cream"></i></div>
+                  <div class="forgotten-title">Sweets & Candy</div>
+                </div>
+                <div class="glass-panel forgotten-card" data-id="bread" id="forget-bread">
+                  <div class="forgotten-checkbox"></div>
+                  <div class="forgotten-icon"><i class="fas fa-bread-slice"></i></div>
+                  <div class="forgotten-title">Bread / Butter</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 4: REVIEW & SUBMIT -->
+            <div class="wizard-step" id="wizard-step-4">
+              <h3 style="font-family: var(--font-title); font-size:18px; color:white;">Step 4: Review and Submit Log</h3>
+              <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.4;">
+                Please review your estimated intake summary below. Add journal details if desired before submitting.
+              </p>
+              
+              <div class="summary-overview">
+                
+                <div class="summary-stats-grid">
+                  <div class="summary-stat-box">
+                    <div class="summary-stat-val" id="sum-calories" style="color: var(--primary);">0</div>
+                    <div class="summary-stat-lbl">Calories</div>
+                  </div>
+                  <div class="summary-stat-box">
+                    <div class="summary-stat-val" id="sum-protein" style="color: var(--success);">0g</div>
+                    <div class="summary-stat-lbl">Protein</div>
+                  </div>
+                  <div class="summary-stat-box">
+                    <div class="summary-stat-val" id="sum-carbs" style="color: var(--accent-cyan);">0g</div>
+                    <div class="summary-stat-lbl">Carbs</div>
+                  </div>
+                  <div class="summary-stat-box">
+                    <div class="summary-stat-val" id="sum-fat" style="color: var(--warning);">0g</div>
+                    <div class="summary-stat-lbl">Fats</div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 style="font-size:13px; color:var(--text-secondary); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Recall Meal List</h4>
+                  <div class="summary-food-list" id="summary-food-items">
+                    <!-- Injected summary list -->
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="recall-notes">Dietary Notes / Log Context (Optional)</label>
+                  <textarea class="form-input" id="recall-notes" style="height: 80px;" placeholder="Describe how your hunger felt, digestive issues, or special circumstances like dining out..."></textarea>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Wizard Footer Action Buttons -->
+            <div class="wizard-footer">
+              <button type="button" class="btn btn-secondary" id="recall-prev-btn">Back</button>
+              <button type="button" class="btn btn-secondary" id="recall-next-btn">Continue</button>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. HISTORY LOGS VIEW -->
+      <section class="app-view" id="view-history">
+        <header class="content-header">
+          <div class="header-title-area">
+            <h1>Recall History Logs</h1>
+            <p>Browse and review your historical 24-hour recalls</p>
+          </div>
+        </header>
+
+        <div id="history-logs-container">
+          <!-- Injected via JavaScript -->
+        </div>
+      </section>
+
+      <!-- 4. FOOD LIBRARY VIEW -->
+      <section class="app-view" id="view-library">
+        <header class="content-header">
+          <div class="header-title-area">
+            <h1>Food Catalog Library</h1>
+            <p>Manage and search items in the database, or register custom ingredients</p>
+          </div>
+        </header>
+
+        <div class="dashboard-grid">
+          
+          <!-- Library search list panel -->
+          <div class="col-8">
+            <div class="glass-panel widget-card" style="gap: 20px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap: 15px; flex-wrap: wrap;">
+                <h3 class="widget-title" style="margin-bottom:0;">Ingredients List</h3>
+                <input type="text" class="form-input" id="library-search-input" placeholder="🔍 Search ingredients or categories..." style="width: 250px; padding: 8px 14px;">
+              </div>
+              
+              <div id="library-list-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; max-height: 520px; overflow-y: auto; padding-right: 5px;">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Food Form -->
+          <div class="col-4">
+            <div class="glass-panel widget-card" style="height: fit-content;">
+              <h3 class="widget-title">Create Custom Ingredient</h3>
+              <form id="add-food-form">
+                
+                <div class="form-group">
+                  <label for="lib-food-name">Ingredient Name</label>
+                  <input type="text" class="form-input" id="lib-food-name" placeholder="e.g. Scrambled Eggs (2 eggs)" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="lib-food-category">Food Category</label>
+                  <select class="form-input" id="lib-food-category">
+                    <option value="grains">Grains & Breads</option>
+                    <option value="protein">Meat, Fish, & Eggs</option>
+                    <option value="dairy">Dairy Products</option>
+                    <option value="fruits">Fruits</option>
+                    <option value="vegetables">Vegetables</option>
+                    <option value="fats">Fats & Oils</option>
+                    <option value="beverages">Beverages</option>
+                    <option value="other">Other / Ready Meals</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="lib-food-calories">Calories (kcal per serving)</label>
+                  <input type="number" class="form-input" id="lib-food-calories" min="0" placeholder="e.g. 150" required>
+                </div>
+
+                <div class="form-group">
+                  <label for="lib-food-protein">Protein (g per serving)</label>
+                  <input type="number" step="0.1" class="form-input" id="lib-food-protein" min="0" placeholder="e.g. 12">
+                </div>
+
+                <div class="form-group">
+                  <label for="lib-food-carbs">Carbohydrates (g per serving)</label>
+                  <input type="number" step="0.1" class="form-input" id="lib-food-carbs" min="0" placeholder="e.g. 24">
+                </div>
+
+                <div class="form-group">
+                  <label for="lib-food-fat">Fat (g per serving)</label>
+                  <input type="number" step="0.1" class="form-input" id="lib-food-fat" min="0" placeholder="e.g. 6.5">
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="btn-add-food-lib" style="width: 100%; margin-top: 10px;">
+                  Add to Catalog
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 5. SETTINGS PROFILE VIEW -->
+      <section class="app-view" id="view-profile">
+        <header class="content-header">
+          <div class="header-title-area">
+            <h1>Nutritional Settings & Profiles</h1>
+            <p>Customize your user details and dietary macro targets</p>
+          </div>
+        </header>
+
+        <div class="recall-container">
+          <div class="glass-panel" style="padding: 30px;">
+            <h3 style="font-family: var(--font-title); font-size:18px; color:white; margin-bottom:15px;">Configure Macro Goals</h3>
+            <form id="profile-settings-form">
+              
+              <div class="form-group">
+                <label for="prof-name">Display Name</label>
+                <input type="text" class="form-input" id="prof-name" placeholder="User">
+              </div>
+
+              <div class="dashboard-grid" style="margin-top: 15px;">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="prof-calories">Calorie Target (kcal/day)</label>
+                    <input type="number" class="form-input" id="prof-calories" min="500" max="10000" placeholder="2000">
+                  </div>
+                </div>
+
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="prof-water">Water Target (ml/day)</label>
+                    <input type="number" class="form-input" id="prof-water" min="500" max="10000" placeholder="2500">
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="prof-protein">Protein Goal (g/day)</label>
+                    <input type="number" class="form-input" id="prof-protein" min="10" max="500" placeholder="120">
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="prof-carbs">Carbohydrates Goal (g/day)</label>
+                    <input type="number" class="form-input" id="prof-carbs" min="10" max="1000" placeholder="220">
+                  </div>
+                </div>
+
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="prof-fat">Fat Goal (g/day)</label>
+                    <input type="number" class="form-input" id="prof-fat" min="5" max="300" placeholder="65">
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" id="btn-save-profile" style="margin-top: 20px;">
+                Update Profile Targets
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Javascript Modules -->
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/recall.js"></script>
+  <script src="js/library.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
