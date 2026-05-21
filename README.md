@@ -64,3 +64,5 @@ diet-recall-app/
 4. **Smart Dietary Tips**: Dynamically analyzes today's logs and provides tailored health advice (e.g., protein increases, calorie warnings, or dehydration alerts).
 5. **Food Catalog Library**: Search the database of standard ingredients or register custom food items.
 6. **Goal Target Customization**: Dynamically update daily target calories, water, and macro limits on the Settings page.
+
+7. Built with ❤️ by Shourya Kumar.
