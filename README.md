@@ -133,7 +133,7 @@ diet-recall-app/
 
 ## 👨‍💻 Developed By
 
-**Shourya Kumar**
+Designed & Developed with ❤️ by Shourya Kumar
 
 Made with ❤️ using **HTML, CSS, JavaScript, Node.js & Express.js**
 
