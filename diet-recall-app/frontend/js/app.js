@@ -1,4 +1,4 @@
-// Main Application Orchestrator
+
 const App = {
   activeView: 'dashboard',
   profile: null,
@@ -14,11 +14,11 @@ const App = {
     if (window.DietRecallWizard) await window.DietRecallWizard.init();
     if (window.FoodLibrary) await window.FoodLibrary.init();
     
-    // Initial data load for global profile/history
+    
     await this.loadGlobalData();
   },
 
-  // Connection check with visual state update
+
   checkConnection: async function() {
     const badge = document.getElementById('connection-status-badge');
     const badgeText = document.getElementById('connection-status-text');
@@ -38,7 +38,7 @@ const App = {
     });
   },
 
-  // Handle Tab Switcher
+ 
   setupNavigation: function() {
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => {
@@ -46,7 +46,7 @@ const App = {
         e.preventDefault();
         const targetView = item.dataset.view;
         
-        // Update active class in sidebar menu
+       
         navItems.forEach(i => i.classList.remove('active'));
         item.classList.add('active');
 
@@ -66,7 +66,6 @@ const App = {
     });
   },
 
-  // Fetch updates when user navigates
   onViewChange: async function(viewId) {
     if (viewId === 'dashboard') {
       if (window.Dashboard) await window.Dashboard.refreshData();
